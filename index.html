@@ -142,7 +142,7 @@
             background-color: #007bff;
             text-align: center;
             padding: 20px;
-            color: white; /* Cor do texto do rodapé alterada para branco */
+            color: white;
             display: flex;
             flex-direction: row;
             justify-content: center;
@@ -154,6 +154,16 @@
         footer p,
         footer img {
             margin: 0;
+        }
+
+        footer a {
+            background-color: #25D366;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            margin-left: auto;
+            /* Alinha o botão à direita */
         }
 
         .faq {
@@ -182,11 +192,11 @@
         .questionario,
         .faq-section,
         .testemunhos-section {
-            background-color: #f1eeee; /* Fundo cinza claro */
+            background-color: #f1eeee;
             opacity: 70%;
-            padding: 10px; /* Padding para dar espaço interno */
-            border-radius: 5px; /* Canto arredondado */
-            letter-spacing: 0.5px; /* Aumenta o espaçamento entre as letras */
+            padding: 10px;
+            border-radius: 5px;
+            letter-spacing: 0.5px;
         }
 
         .features {
@@ -337,6 +347,11 @@
         .hidden {
             display: none;
         }
+
+        input:invalid,
+        select:invalid {
+            border-color: red;
+        }
     </style>
 </head>
 
@@ -419,7 +434,8 @@
 
                     <div id="step2" class="question-step hidden">
                         <label for="quantidade">Quantas pessoas serão incluídas no plano?</label>
-                        <select id="quantidade" onchange="atualizarCamposIdade()" class="quantidade-select">
+                        <select id="quantidade" required onchange="atualizarCamposIdade()" class="quantidade-select">
+                            <option value="">Selecione</option>
                             <option value="1">1</option>
                             <option value="2">2</option>
                             <option value="3">3</option>
@@ -557,6 +573,7 @@
                     </div>
 
                     <div id="finalStep" class="question-step hidden">
+                        <p>Por favor, clique em 'Enviar' para concluir sua solicitação..</p>
                         <button type="submit" class="button">Enviar Cotação</button>
                     </div>
 
@@ -623,6 +640,7 @@
         <p>Telefone: 21 96473-8527</p>
         <p>Email: cabralpsaude@gmail.com</p>
         <p>Rio de Janeiro-Centro</p>
+        <a href="https://api.whatsapp.com/send?phone=5521964738527&text=Ol%C3%A1,%20gostaria%20de%20solicitar%20uma%20cota%C3%A7%C3%A3o,%20por%20favor." target="_blank">WhatsApp</a>
     </footer>
 
     <!-- JavaScript -->
@@ -687,6 +705,7 @@
                 idadeInput.placeholder = ''; // Placeholder vazio
                 idadeInput.min = 0;
                 idadeInput.max = 100;
+                idadeInput.required = true;
                 idadesContainer.appendChild(idadeInput);
             }
         }
@@ -718,7 +737,20 @@
         // Função para avançar para o próximo passo
         function nextStep() {
             const steps = document.querySelectorAll('.question-step');
-            if (currentStep < steps.length) {
+            const currentFields = steps[currentStep].querySelectorAll('input[required], select[required]');
+
+            let allFieldsFilled = true;
+            currentFields.forEach(field => {
+                if (!field.value) {
+                    allFieldsFilled = false;
+                    field.style.borderColor = 'red'; // Destaca o campo não preenchido
+                    alert('Por favor, preencha todos os campos obrigatórios antes de prosseguir.');
+                } else {
+                    field.style.borderColor = ''; // Remove o destaque quando preenchido
+                }
+            });
+
+            if (allFieldsFilled && currentStep < steps.length) {
                 steps[currentStep].classList.add('hidden'); // Oculta o passo atual
                 currentStep++; // Avança para o próximo passo
                 if (currentStep < steps.length) {
